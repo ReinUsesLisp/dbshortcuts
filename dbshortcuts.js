@@ -1,0 +1,293 @@
+// Keyboard shortcut configuration.
+const config = {
+    "die": "8",
+    "coin": "9",
+    "token": "0",
+    "chat": "c",
+    "life": "l",
+    "think": "z",
+    "good": "x",
+    "shuffle": "j",
+    "showHand": "h",
+    "extra": "q",
+    "deck": "w",
+    "graveyardBanish": "e",
+    "zones": ["Digit1", "Digit2", "Digit3", "Digit4", "Digit5"],
+    "leftEMZ": "Digit6",
+    "rightEMZ": "Digit7",
+    "field": "f",
+    "phases": ["Digit1", "Digit2", "Digit3", "Digit4", "Digit5", "Digit6"],
+    "menu": {
+        "View": ["v", false],
+        "To Hand": ["h", false],
+        "To Grave": ["g", false],
+        "To Graveyard": ["g", false],
+        "Remove": ["r", false],
+        "Banish": ["b", true],
+        "Banish T.": ["b", true],
+        "Banish FD": ["B", true],
+        "To Extra Deck": ["h", true],
+        "Overlay": ["o", false],
+        "Detach": ["d", false],
+
+        "To Top of Deck": ["T", true],
+        "To T. Deck": ["T", true],
+        "To Bottom of Deck": ["Y", true],
+
+        "Reveal": ["r", false],
+        "Normal Summon": ["n", false],
+        "Set": ["s", true],
+        "To S/T": ["S", true],
+        "Declare": ["D", true],
+        "Activate": ["a", false],
+
+        "Attack": ["a", true],
+        "Attack Directly": ["A", true],
+
+        "S. Summon ATK": ["a", false],
+        "S. Summon DEF": ["d", true],
+        "SS ATK": ["a", true],
+        "SS DEF": ["d", true],
+        "OL ATK": ["A", true],
+        "OL DEF": ["D", true],
+
+        "Attach": ["A", true],
+
+        "To ATK": ["v", false],
+        "To DEF": ["v", false],
+
+        "Flip Summon": ["a", false],
+        "Flip": ["d", false],
+
+        "Move": ["m", false],
+        "Target": ["t", true],
+
+        "Draw": ["d", false],
+        "Shuffle": ["s", false],
+        "Mill": ["m", false]
+    }
+};
+
+const chatInput = $('#duel .cin_txt');
+const lifeInput = $('#life_txt');
+const dieButton = $('#die_btn');
+const coinButton = $('#coin_btn');
+const tokenButton = $('#duel .token_btn');
+const goodButton = $('#good_btn');
+const thinkButton = $('#think_btn');
+const shuffleButton = $('#shuffle_btn');
+const showHandButton = $('#show_hand_btn');
+const viewExitButton = $('#view')[0].getElementsByClassName("exit_btn");
+const phaseButtons = [$('#dp'), $('#sp'), $('#m1'), $('#bp'), $('#m2'), $('#ep')];
+const extraHidden = $('#extra_hidden');
+const deckHidden = $('#deck_hidden');
+const graveyardHidden = $('#grave_hidden');
+const banishHidden = $('#banished_hidden');
+const leftEMZ = $('#link_left_select');
+const rightEMZ = $('#link_right_select');
+const fieldZone = $('#field_spell1_select');
+
+clickEvent = document.createEvent("HTMLEvents");
+clickEvent.initEvent("click", true, true);
+clickEvent.eventName = "click";
+
+mouseoverEvent = document.createEvent("HTMLEvents");
+mouseoverEvent.initEvent("mouseover", true, true);
+mouseoverEvent.eventName = "mouseover";
+
+function findMonsterCard(index, player = player1) {
+    monsters = [player.m1, player.m2, player.m3, player.m4, player.m5];
+    return monsters[index];
+}
+
+function findSpellTrapCard(index, player = player1) {
+    spellTraps = [player.s1, player.s2, player.s3, player.s4, player.s5];
+    return spellTraps[index];
+}
+
+function keyUpHoverMenu(event, key) {
+    const cardMenu = menu.find('#card_menu_content');
+    if (!cardMenu.is(":visible")) {
+        return false;
+    }
+    const entries = cardMenu.children();
+    for (let attempt = 0; attempt < 2; attempt++) {
+        for (let i = entries.length; i-- > 0;) {
+            const entry = entries[i];
+            const text = entry.getElementsByClassName("card_menu_txt")[0].textContent;
+            const keyMenu = config.menu[text];
+            if (keyMenu) {
+                let [expectedKey, caseSensitive] = keyMenu;
+                let pressedKey = key;
+                if (attempt > 0) {
+                    caseSensitive = false;
+                    expectedKey = expectedKey.toLowerCase();
+                }
+                if (caseSensitive && event.shiftKey) {
+                    pressedKey = key.toUpperCase();
+                }
+                if (expectedKey === pressedKey) {
+                    entry.dispatchEvent(clickEvent);
+                    return true;
+                }
+            }
+        }
+    }
+    return false;
+}
+
+function keyUpPhases(event) {
+    if (!event.altKey) {
+        return false;
+    }
+    for (let i in phaseButtons) {
+        if (event.code === config.phases[i]) {
+            phaseButtons[i][0].dispatchEvent(clickEvent);
+            return true;
+        }
+    }
+    return false;
+}
+
+function keyUpZones(event, key) {
+    for (let i = 0; i < config.zones.length; i++) {
+        if (event.code !== config.zones[i]) {
+            continue;
+        }
+        const monsterName = '#m' + (i + 1) + '_select';
+        const spellTrapName = '#s' + (i + 1) + '_select';
+        const monster = $(monsterName);
+        const spellTrap = $(spellTrapName);
+        if (monster.is(":visible") && spellTrap.is(":visible")) {
+            const zone = (event.shiftKey ? spellTrap[0] : monster[0]);
+            zone.dispatchEvent(clickEvent);
+            return true;
+        } else if (monster.is(":visible")) {
+            monster[0].dispatchEvent(clickEvent);
+            return true;
+        } else if (spellTrap.is(":visible")) {
+            spellTrap[0].dispatchEvent(clickEvent);
+            return true;
+        } else {
+            const monsterCard = findMonsterCard(i);
+            const spellTrapCard = findSpellTrapCard(i);
+            let card = null;
+            if (monsterCard && spellTrapCard) {
+                card = (event.shiftKey ? spellTrapCard : monsterCard);
+            } else {
+                card = monsterCard || spellTrapCard;
+            }
+            if (card) {
+                card.find('.content:first')[0].dispatchEvent(mouseoverEvent);
+                return true;
+            }
+        }
+    }
+    let element = null;
+    let card = null;
+    if (event.code == config.leftEMZ) {
+        element = leftEMZ;
+        card = linkLeft;
+    } else if (event.code == config.rightEMZ) {
+        element = rightEMZ;
+        card = linkRight;
+    } else if (key == config.field) {
+        element = fieldZone;
+        card = player1.fieldSpell;
+    }
+    if (element && element.is(":visible")) {
+        element[0].dispatchEvent(clickEvent);
+        return true;
+    }
+    if (card) {
+        card.find('.content:first')[0].dispatchEvent(mouseoverEvent);
+        return true;
+    }
+    return false;
+}
+
+function keyUpGlobalButtons(event, key) {
+    switch (key) {
+    case config.die:
+        dieButton[0].dispatchEvent(clickEvent);
+        return true;
+    case config.key:
+        coinButton[0].dispatchEvent(clickEvent);
+        return true;
+    case config.token:
+        tokenButton[0].dispatchEvent(clickEvent);
+        return true;
+    case config.think:
+        thinkButton[0].dispatchEvent(clickEvent);
+        return true;
+    case config.good:
+        goodButton[0].dispatchEvent(clickEvent);
+        return true;
+    case config.shuffle:
+        if (event.shiftKey) {
+            shuffleButton[0].dispatchEvent(clickEvent);
+            return true;
+        }
+        break;
+    case config.showHand:
+        if (event.shiftKey) {
+            showHandButton[0].dispatchEvent(clickEvent);
+            return true;
+        }
+        break;
+    case config.chat:
+        chatInput.focus();
+        return true;
+    case config.life:
+        lifeInput.focus();
+        return true;
+    case config.extra:
+        extraHidden[0].dispatchEvent(mouseoverEvent);
+        return true;
+    case config.deck:
+        deckHidden[0].dispatchEvent(mouseoverEvent);
+        return true;
+    case config.graveyardBanish:
+        if (event.shiftKey) {
+            banishHidden[0].dispatchEvent(clickEvent);
+        } else {
+            graveyardHidden[0].dispatchEvent(clickEvent);
+        }
+        return true;
+    default:
+        break;
+    }
+    return false;
+}
+
+function keyUpEventHandler(event) {
+    //console.log('key ' + event.key);
+    //console.log('code ' + event.code);
+
+    // Ignore keys if we are not dueling.
+    // The standby phase button can be used to know if the website is in a duel.
+    if (!$('#sp').is(":visible")) {
+        return;
+    }
+
+    const key = event.key.toLowerCase();
+    const activeElement = document.activeElement;
+    const textFocus = ((activeElement === chatInput[0]) || (activeElement === lifeInput[0]));
+
+    if (key === "escape") {
+        if (textFocus) {
+            document.activeElement.blur();
+        } else {
+            if (viewExitButton[0].clientHeight != 0) {
+                viewExitButton[0].dispatchEvent(clickEvent);
+            }
+        }
+        return;
+    }
+    if (textFocus) {
+        return;
+    }
+    keyUpHoverMenu(event, key) || keyUpPhases(event) || keyUpZones(event, key) || keyUpGlobalButtons(event, key);
+}
+
+document.addEventListener('keyup', keyUpEventHandler, false);
