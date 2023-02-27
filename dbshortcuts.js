@@ -17,15 +17,10 @@ const leftEMZ = $('#link_left_select');
 const rightEMZ = $('#link_right_select');
 const fieldZone = $('#field_spell1_select');
 
+const clickEvent = new Event("click", {bubbles: true, cancelable: true});
+const mouseoverEvent = new Event("mouseover", {bubbles: true, cancelable: true});
+
 var config = {};
-
-let clickEvent = document.createEvent("HTMLEvents");
-clickEvent.initEvent("click", true, true);
-clickEvent.eventName = "click";
-
-let mouseoverEvent = document.createEvent("HTMLEvents");
-mouseoverEvent.initEvent("mouseover", true, true);
-mouseoverEvent.eventName = "mouseover";
 
 function findMonsterCard(index, player = player1) {
     monsters = [player.m1, player.m2, player.m3, player.m4, player.m5];

@@ -4,10 +4,11 @@ fetch(chrome.runtime.getURL('config.json'))
         var script = document.createElement('script');
         script.src = chrome.runtime.getURL('dbshortcuts.js');
         script.onload = function() {
-            var event = document.createEvent('CustomEvent');
-            event.initCustomEvent('DBSConfigLoaded', true, true, config);
-            document.dispatchEvent(event);
-
+            document.dispatchEvent(new CustomEvent('DBSConfigLoaded', {
+                detail: config,
+                bubbles: true,
+                cancelable: true
+            }));
             this.remove();
         };
         (document.head || document.documentElement).appendChild(script);
