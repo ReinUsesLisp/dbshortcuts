@@ -1,73 +1,3 @@
-// Keyboard shortcut configuration.
-const config = {
-    "die": "8",
-    "coin": "9",
-    "token": "0",
-    "chat": "c",
-    "life": "l",
-    "think": "z",
-    "good": "x",
-    "shuffle": "j",
-    "showHand": "h",
-    "extra": "q",
-    "deck": "w",
-    "graveyardBanish": "e",
-    "zones": ["Digit1", "Digit2", "Digit3", "Digit4", "Digit5"],
-    "leftEMZ": "Digit6",
-    "rightEMZ": "Digit7",
-    "field": "f",
-    "phases": ["Digit1", "Digit2", "Digit3", "Digit4", "Digit5", "Digit6"],
-    "menu": {
-        "View": ["v", false],
-        "To Hand": ["h", false],
-        "To Grave": ["g", false],
-        "To Graveyard": ["g", false],
-        "Remove": ["r", false],
-        "Banish": ["b", true],
-        "Banish T.": ["b", true],
-        "Banish FD": ["B", true],
-        "To Extra Deck": ["h", true],
-        "Overlay": ["o", false],
-        "Detach": ["d", false],
-
-        "To Top of Deck": ["T", true],
-        "To T. Deck": ["T", true],
-        "To Bottom of Deck": ["Y", true],
-
-        "Reveal": ["r", false],
-        "Normal Summon": ["n", false],
-        "Set": ["s", true],
-        "To S/T": ["S", true],
-        "Declare": ["D", true],
-        "Activate": ["a", false],
-
-        "Attack": ["a", true],
-        "Attack Directly": ["A", true],
-
-        "S. Summon ATK": ["a", false],
-        "S. Summon DEF": ["d", true],
-        "SS ATK": ["a", true],
-        "SS DEF": ["d", true],
-        "OL ATK": ["A", true],
-        "OL DEF": ["D", true],
-
-        "Attach": ["A", true],
-
-        "To ATK": ["v", false],
-        "To DEF": ["v", false],
-
-        "Flip Summon": ["a", false],
-        "Flip": ["d", false],
-
-        "Move": ["m", false],
-        "Target": ["t", true],
-
-        "Draw": ["d", false],
-        "Shuffle": ["s", false],
-        "Mill": ["m", false]
-    }
-};
-
 const chatInput = $('#duel .cin_txt');
 const lifeInput = $('#life_txt');
 const dieButton = $('#die_btn');
@@ -87,11 +17,13 @@ const leftEMZ = $('#link_left_select');
 const rightEMZ = $('#link_right_select');
 const fieldZone = $('#field_spell1_select');
 
-clickEvent = document.createEvent("HTMLEvents");
+let config = {};
+
+let clickEvent = document.createEvent("HTMLEvents");
 clickEvent.initEvent("click", true, true);
 clickEvent.eventName = "click";
 
-mouseoverEvent = document.createEvent("HTMLEvents");
+let mouseoverEvent = document.createEvent("HTMLEvents");
 mouseoverEvent.initEvent("mouseover", true, true);
 mouseoverEvent.eventName = "mouseover";
 
@@ -290,4 +222,7 @@ function keyUpEventHandler(event) {
     keyUpHoverMenu(event, key) || keyUpPhases(event) || keyUpZones(event, key) || keyUpGlobalButtons(event, key);
 }
 
-document.addEventListener('keyup', keyUpEventHandler, false);
+document.addEventListener('DBSConfigLoaded', function(e) {
+    config = e.detail;
+    document.addEventListener('keyup', keyUpEventHandler, false);
+});

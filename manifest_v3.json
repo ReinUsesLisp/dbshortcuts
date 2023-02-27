@@ -5,7 +5,7 @@
     "manifest_version": 3,
 
     "web_accessible_resources": [ {
-        "resources": ["dbshortcuts.js"],
+        "resources": ["dbshortcuts.js", "config.json"],
         "matches": ["https://www.duelingbook.com/*"]
     } ],
     "content_scripts": [ {
