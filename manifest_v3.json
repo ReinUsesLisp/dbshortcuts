@@ -1,15 +1,15 @@
 {
     "name": "DBShortcuts",
     "version": "0.1",
-    "description": "Dueling Book keyboard shortcuts",
+    "description": "Duelingbook keyboard shortcuts",
     "manifest_version": 3,
 
     "web_accessible_resources": [ {
-        "resources": ["../js/dbshortcuts.js"],
+        "resources": ["dbshortcuts.js"],
         "matches": ["https://www.duelingbook.com/*"]
     } ],
     "content_scripts": [ {
-        "js": ["../js/content_script.js"],
+        "js": ["content_script.js"],
         "matches": ["https://www.duelingbook.com/*"]
     } ]
 }

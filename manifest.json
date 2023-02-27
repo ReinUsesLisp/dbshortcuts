@@ -1,7 +1,7 @@
 {
     "name": "DBShortcuts",
     "version": "0.1",
-    "description": "Dueling Book keyboard shortcuts",
+    "description": "Duelingbook keyboard shortcuts",
     "manifest_version": 2,
 
     "web_accessible_resources": [
