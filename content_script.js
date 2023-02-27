@@ -1,5 +1,5 @@
 fetch(chrome.runtime.getURL('config.json'))
-    .then((response) => response.json())
+    .then((response) => response.text())
     .then(function(config) {
         var script = document.createElement('script');
         script.src = chrome.runtime.getURL('dbshortcuts.js');

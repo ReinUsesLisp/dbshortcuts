@@ -17,7 +17,7 @@ const leftEMZ = $('#link_left_select');
 const rightEMZ = $('#link_right_select');
 const fieldZone = $('#field_spell1_select');
 
-let config = {};
+var config = {};
 
 let clickEvent = document.createEvent("HTMLEvents");
 clickEvent.initEvent("click", true, true);
@@ -223,6 +223,6 @@ function keyUpEventHandler(event) {
 }
 
 document.addEventListener('DBSConfigLoaded', function(e) {
-    config = e.detail;
+    config = JSON.parse(e.detail);
     document.addEventListener('keyup', keyUpEventHandler, false);
 });
