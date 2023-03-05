@@ -32,33 +32,32 @@ function findSpellTrapCard(index, player = player1) {
     return spellTraps[index];
 }
 
-function keyUpHoverMenu(event, key) {
+function findHoverMenuKey(event, key) {
     const cardMenu = menu.find('#card_menu_content');
     if (!cardMenu.is(":visible")) {
-        return false;
+        return null;
     }
-    const entries = cardMenu.children();
-    for (let attempt = 0; attempt < 2; attempt++) {
-        for (let i = entries.length; i-- > 0;) {
-            const entry = entries[i];
-            const text = entry.getElementsByClassName("card_menu_txt")[0].textContent;
-            const keyMenu = config.menu[text];
-            if (keyMenu) {
-                let [expectedKey, caseSensitive] = keyMenu;
-                let pressedKey = key;
-                if (attempt > 0) {
-                    caseSensitive = false;
-                    expectedKey = expectedKey.toLowerCase();
+    for (const ignoreCaseSensitive of [false, true]) {
+        for (const entry of cardMenu.children()) {
+            if (entry.caseSensitive && !ignoreCaseSensitive) {
+                if ((event.shiftKey && (key.toUpperCase() === entry.key)) || (!event.shiftKey && (key === entry.key))) {
+                    return entry;
                 }
-                if (caseSensitive && event.shiftKey) {
-                    pressedKey = key.toUpperCase();
-                }
-                if (expectedKey === pressedKey) {
-                    entry.dispatchEvent(clickEvent);
-                    return true;
+            } else {
+                if (key === entry.key.toLowerCase()) {
+                    return entry;
                 }
             }
         }
+    }
+    return null;
+}
+
+function keyUpHoverMenu(event, key) {
+    const entry = findHoverMenuKey(event, key);
+    if (entry) {
+        entry.dispatchEvent(clickEvent);
+        return true;
     }
     return false;
 }
@@ -216,6 +215,56 @@ function keyUpEventHandler(event) {
     }
     keyUpHoverMenu(event, key) || keyUpPhases(event) || keyUpZones(event, key) || keyUpGlobalButtons(event, key);
 }
+
+function modifyEntry(entry) {
+    if (entry.modifiedUI) {
+        return;
+    }
+    entry.modifiedUI = true;
+
+    const textSpan = entry.getElementsByClassName("card_menu_txt")[0];
+    const textContent = textSpan.textContent;
+
+    const [key, caseSensitive] = config.menu[textContent];
+    if (!key) {
+        return;
+    }
+    entry.key = key;
+    entry.caseSensitive = caseSensitive;
+
+    const u = document.createElement('u');
+    const newSpan = document.createElement('span');
+    newSpan.className = 'card_menu_txt';
+
+    const index = textContent.toLowerCase().search(key.toLowerCase());
+    if (index < 0) {
+        u.append(key);
+        newSpan.append(textContent + ' (');
+        newSpan.append(u);
+        newSpan.append(')');
+    } else {
+        u.append(textContent[index]);
+        newSpan.append(textContent.substring(0, index));
+        newSpan.append(u);
+        newSpan.append(textContent.substring(index + 1));
+    }
+    entry.append(newSpan);
+    textSpan.remove();
+}
+
+const dbShowMenu = showMenu;
+showMenu = function(card, dp) {
+    dbShowMenu.apply(dbShowMenu, arguments);
+
+    const cardMenu = menu.find('#card_menu_content');
+    if (!cardMenu.is(":visible")) {
+        return;
+    }
+    const entries = cardMenu.children();
+    for (let i = entries.length; i-- > 0;) {
+        modifyEntry(entries[i]);
+    }
+};
 
 document.addEventListener('DBSConfigLoaded', function(e) {
     config = JSON.parse(e.detail);
