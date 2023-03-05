@@ -20,6 +20,8 @@ const skipIntroButton = $('#skip_intro_btn');
 const loginOkayButton = $('#combo > div.ok_btn');
 const loginDuelButton = $('#duel_btn');
 const duelRoomButton = $('#room_btn');
+const plusButton = $('#plus_btn');
+const minusButton = $('#minus_btn');
 
 const clickEvent = new Event("click", {bubbles: true, cancelable: true});
 const mouseoverEvent = new Event("mouseover", {bubbles: true, cancelable: true});
@@ -34,6 +36,16 @@ function findMonsterCard(index, player = player1) {
 function findSpellTrapCard(index, player = player1) {
     spellTraps = [player.s1, player.s2, player.s3, player.s4, player.s5];
     return spellTraps[index];
+}
+
+function clickWhenVisible(...elements) {
+    for (const jquery of elements) {
+        if (jquery.is(":visible")) {
+            jquery[0].dispatchEvent(clickEvent);
+            return true;
+        }
+    }
+    return false;
 }
 
 function findHoverMenuKey(event, key) {
@@ -136,16 +148,6 @@ function keyUpZones(event, key) {
     return false;
 }
 
-function clickWhenVisible(...elements) {
-    for (const jquery of elements) {
-        if (jquery.is(":visible")) {
-            jquery[0].dispatchEvent(clickEvent);
-            return true;
-        }
-    }
-    return false;
-}
-
 function keyUpDuel(event) {
     switch (event.code) {
     case config.duel.die:
@@ -179,6 +181,7 @@ function keyUpDuel(event) {
         chatInput.focus();
         return true;
     case config.duel.life:
+        clickWhenVisible(event.shiftKey ? minusButton : plusButton);
         lifeInput.focus();
         return true;
     case config.duel.extra:
