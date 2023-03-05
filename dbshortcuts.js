@@ -16,6 +16,10 @@ const banishHidden = $('#banished_hidden');
 const leftEMZ = $('#link_left_select');
 const rightEMZ = $('#link_right_select');
 const fieldZone = $('#field_spell1_select');
+const skipIntroButton = $('#skip_intro_btn');
+const loginOkayButton = $('#combo > div.ok_btn');
+const loginDuelButton = $('#duel_btn');
+const duelRoomButton = $('#room_btn');
 
 const clickEvent = new Event("click", {bubbles: true, cancelable: true});
 const mouseoverEvent = new Event("mouseover", {bubbles: true, cancelable: true});
@@ -132,6 +136,16 @@ function keyUpZones(event, key) {
     return false;
 }
 
+function clickWhenVisible(...elements) {
+    for (const jquery of elements) {
+        if (jquery.is(":visible")) {
+            jquery[0].dispatchEvent(clickEvent);
+            return true;
+        }
+    }
+    return false;
+}
+
 function keyUpGlobalButtons(event, key) {
     switch (key) {
     case config.die:
@@ -186,9 +200,26 @@ function keyUpGlobalButtons(event, key) {
     return false;
 }
 
+function keyUpWebsiteMenu(event) {
+    switch (event.code) {
+    case config.skip:
+        if (clickWhenVisible(skipIntroButton, loginOkayButton, loginDuelButton, duelRoomButton)) {
+            return true;
+        }
+        break;
+    default:
+        break;
+    }
+    return false;
+}
+
 function keyUpEventHandler(event) {
     //console.log('key ' + event.key);
     //console.log('code ' + event.code);
+
+    if (keyUpWebsiteMenu(event)) {
+        return;
+    }
 
     // Ignore keys if we are not dueling.
     // The standby phase button can be used to know if the website is in a duel.

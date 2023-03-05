@@ -12,6 +12,7 @@
     "extra": "q",
     "deck": "w",
     "graveyardBanish": "e",
+    "skip": "Space",
     "zones": ["Digit1", "Digit2", "Digit3", "Digit4", "Digit5"],
     "leftEMZ": "Digit6",
     "rightEMZ": "Digit7",
