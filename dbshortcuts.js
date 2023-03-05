@@ -201,7 +201,7 @@ function keyUpEventHandler(event) {
     const activeElement = document.activeElement;
     const textFocus = ((activeElement === chatInput[0]) || (activeElement === lifeInput[0]));
 
-    if (key === config.cancel) {
+    if (key === config.cancel.toLowerCase()) {
         if (textFocus) {
             document.activeElement.blur();
         } else {
