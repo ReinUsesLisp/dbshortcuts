@@ -71,7 +71,7 @@ function keyUpPhases(event) {
         return false;
     }
     for (let i in phaseButtons) {
-        if (event.code === config.phases[i]) {
+        if (event.code === config.duel.phases[i]) {
             phaseButtons[i][0].dispatchEvent(clickEvent);
             return true;
         }
@@ -80,8 +80,8 @@ function keyUpPhases(event) {
 }
 
 function keyUpZones(event, key) {
-    for (let i = 0; i < config.zones.length; i++) {
-        if (event.code !== config.zones[i]) {
+    for (let i = 0; i < config.duel.zones.length; i++) {
+        if (event.code !== config.duel.zones[i]) {
             continue;
         }
         const monsterName = '#m' + (i + 1) + '_select';
@@ -115,13 +115,13 @@ function keyUpZones(event, key) {
     }
     let element = null;
     let card = null;
-    if (event.code == config.leftEMZ) {
+    if (event.code == config.duel.leftEMZ) {
         element = leftEMZ;
         card = linkLeft;
-    } else if (event.code == config.rightEMZ) {
+    } else if (event.code == config.duel.rightEMZ) {
         element = rightEMZ;
         card = linkRight;
-    } else if (key == config.field) {
+    } else if (key == config.duel.field) {
         element = fieldZone;
         card = player1.fieldSpell;
     }
@@ -146,48 +146,48 @@ function clickWhenVisible(...elements) {
     return false;
 }
 
-function keyUpGlobalButtons(event, key) {
-    switch (key) {
-    case config.die:
+function keyUpDuel(event) {
+    switch (event.code) {
+    case config.duel.die:
         dieButton[0].dispatchEvent(clickEvent);
         return true;
-    case config.key:
+    case config.duel.key:
         coinButton[0].dispatchEvent(clickEvent);
         return true;
-    case config.token:
+    case config.duel.token:
         tokenButton[0].dispatchEvent(clickEvent);
         return true;
-    case config.think:
+    case config.duel.think:
         thinkButton[0].dispatchEvent(clickEvent);
         return true;
-    case config.good:
+    case config.duel.good:
         goodButton[0].dispatchEvent(clickEvent);
         return true;
-    case config.shuffle:
+    case config.duel.shuffle:
         if (event.shiftKey) {
             shuffleButton[0].dispatchEvent(clickEvent);
             return true;
         }
         break;
-    case config.showHand:
+    case config.duel.showHand:
         if (event.shiftKey) {
             showHandButton[0].dispatchEvent(clickEvent);
             return true;
         }
         break;
-    case config.chat:
+    case config.duel.chat:
         chatInput.focus();
         return true;
-    case config.life:
+    case config.duel.life:
         lifeInput.focus();
         return true;
-    case config.extra:
+    case config.duel.extra:
         extraHidden[0].dispatchEvent(mouseoverEvent);
         return true;
-    case config.deck:
+    case config.duel.deck:
         deckHidden[0].dispatchEvent(mouseoverEvent);
         return true;
-    case config.graveyardBanish:
+    case config.duel.graveyardBanish:
         if (event.shiftKey) {
             banishHidden[0].dispatchEvent(clickEvent);
         } else {
@@ -200,9 +200,9 @@ function keyUpGlobalButtons(event, key) {
     return false;
 }
 
-function keyUpWebsiteMenu(event) {
+function keyUpGlobal(event) {
     switch (event.code) {
-    case config.skip:
+    case config.global.skip:
         if (clickWhenVisible(skipIntroButton, loginOkayButton, loginDuelButton, duelRoomButton)) {
             return true;
         }
@@ -217,7 +217,7 @@ function keyUpEventHandler(event) {
     //console.log('key ' + event.key);
     //console.log('code ' + event.code);
 
-    if (keyUpWebsiteMenu(event)) {
+    if (keyUpGlobal(event)) {
         return;
     }
 
@@ -231,7 +231,7 @@ function keyUpEventHandler(event) {
     const activeElement = document.activeElement;
     const textFocus = ((activeElement === chatInput[0]) || (activeElement === lifeInput[0]));
 
-    if (key === config.cancel.toLowerCase()) {
+    if (key === config.duel.cancel.toLowerCase()) {
         if (textFocus) {
             document.activeElement.blur();
         } else {
@@ -244,7 +244,7 @@ function keyUpEventHandler(event) {
     if (textFocus) {
         return;
     }
-    keyUpHoverMenu(event, key) || keyUpPhases(event) || keyUpZones(event, key) || keyUpGlobalButtons(event, key);
+    keyUpHoverMenu(event, key) || keyUpPhases(event) || keyUpZones(event, key) || keyUpDuel(event);
 }
 
 function modifyEntry(entry) {
