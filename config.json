@@ -38,6 +38,7 @@
         "To Top of Deck": ["T", true],
         "To T. Deck": ["T", true],
         "To Bottom of Deck": ["Y", true],
+        "To B. Deck": ["Y", true],
 
         "Reveal": ["r", false],
         "Normal Summon": ["n", false],
