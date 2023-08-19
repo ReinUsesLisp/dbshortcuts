@@ -35,6 +35,10 @@
         "Overlay": ["o", false],
         "Detach": ["d", false],
 
+        "Resolve Effect": ["r", false],
+        "Choose": ["s", false],
+        "Banish 10 Cards FD": ["r", false],
+
         "To Top of Deck": ["T", true],
         "To T. Deck": ["T", true],
         "To Bottom of Deck": ["Y", true],
