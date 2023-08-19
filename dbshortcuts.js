@@ -60,7 +60,7 @@ function findHoverMenuKey(event, key) {
                     return entry;
                 }
             } else {
-                if (key === entry.key.toLowerCase()) {
+                if ('key' in entry && key === entry.key.toLowerCase()) {
                     return entry;
                 }
             }
@@ -259,10 +259,10 @@ function modifyEntry(entry) {
     const textSpan = entry.getElementsByClassName("card_menu_txt")[0];
     const textContent = textSpan.textContent;
 
-    const [key, caseSensitive] = config.menu[textContent];
-    if (!key) {
+    if (!(textContent in config.menu)) {
         return;
     }
+    const [key, caseSensitive] = config.menu[textContent];
     entry.key = key;
     entry.caseSensitive = caseSensitive;
 
