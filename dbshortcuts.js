@@ -22,6 +22,10 @@ const loginDuelButton = $('#duel_btn');
 const duelRoomButton = $('#room_btn');
 const plusButton = $('#plus_btn');
 const minusButton = $('#minus_btn');
+const playButton = $('#play_btn');
+const pauseButton = $('#pause_replay_btn')
+const nextButton = $('#next_btn');
+const fastForwardButton = $('#fast_btn');
 
 const clickEvent = new Event("click", {bubbles: true, cancelable: true});
 const mouseoverEvent = new Event("mouseover", {bubbles: true, cancelable: true});
@@ -148,6 +152,30 @@ function keyUpZones(event, key) {
     return false;
 }
 
+function keyUpReplay(event) {
+    switch (event.code) {
+    case config.replay.playPause:
+        if (!pauseButton.is(":disabled")) {
+            pauseButton[0].dispatchEvent(clickEvent);
+            return true;
+        }
+        if (!playButton.is(":disabled")) {
+            playButton[0].dispatchEvent(clickEvent);
+            return true;
+        }
+        break;
+    case config.replay.next:
+        nextButton[0].dispatchEvent(clickEvent);
+        return true;
+    case config.replay.fastForward:
+        fastForwardButton[0].dispatchEvent(clickEvent);
+        return true;
+    default:
+        break;
+    }
+    return false;
+}
+
 function keyUpDuel(event) {
     switch (event.code) {
     case config.duel.die:
@@ -224,9 +252,9 @@ function keyUpEventHandler(event) {
         return;
     }
 
-    // Ignore keys if we are not dueling.
-    // The standby phase button can be used to know if the website is in a duel.
-    if (!$('#sp').is(":visible")) {
+    // Ignore keys if we are not dueling or on a replay.
+    // These buttons can be used to know if the website is in a duel.
+    if (!$('#sp').is(":visible") && !playButton.is(":visible")) {
         return;
     }
 
@@ -247,7 +275,13 @@ function keyUpEventHandler(event) {
     if (textFocus) {
         return;
     }
-    keyUpHoverMenu(event, key) || keyUpPhases(event) || keyUpZones(event, key) || keyUpDuel(event);
+    if (keyUpHoverMenu(event, key) || keyUpPhases(event) || keyUpZones(event, key)) {
+        return;
+    }
+    if (pauseButton.is(":visible") && keyUpReplay(event)) {
+        return;
+    }
+    keyUpDuel(event);
 }
 
 function modifyEntry(entry) {

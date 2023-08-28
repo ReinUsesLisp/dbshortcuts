@@ -22,6 +22,11 @@
         "field": "KeyF",
         "phases": ["Digit1", "Digit2", "Digit3", "Digit4", "Digit5", "Digit6"]
     },
+    "replay": {
+        "playPause": "KeyX",
+        "next": "KeyZ",
+        "fastForward": "KeyF"
+    },
     "menu": {
         "View": ["v", false],
         "To Hand": ["h", false],
